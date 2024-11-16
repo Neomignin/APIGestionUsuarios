@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 document.addEventListener("DOMContentLoaded", () => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield axios.get("http://localhost:3000/api/v1/users");
-    let htmlUsers = "<ul>";
-    result.data.forEach((user) => { htmlUsers += `<li>${user.name} ${user.first_surname}</li>`; });
-    htmlUsers += "</ul>";
+    let htmlUsers = "<table><thead><td>Nombre</td><td>Apellidos</td><td>Nombre usuario</td><td>Email</td><td>Actualizar</td><td>Eliminar</td></thead>";
+    result.data.forEach((user) => { htmlUsers += `<tr><td>${user.name}</td> <td>${user.first_surname}</td> <td>${user.userName}</td> <td>${user.email}</td> <td><img src="../../media/icon/lapiz.png"></td> <td><img src="../../media/icon/basura.png"></td></tr>`; });
+    htmlUsers += "</table>";
     document.getElementById("users").innerHTML = htmlUsers;
 }));

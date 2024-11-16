@@ -15,4 +15,3 @@ staticRouter.get('/usersManagement', (req: Express.Request, res: Express.Respons
 });
 
 export {staticRouter} ;
-

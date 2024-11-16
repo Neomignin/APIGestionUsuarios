@@ -2,3 +2,11 @@ h1{
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     color:chocolate;
 }
+
+a{
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    color:red;
+}
+img{
+    width: 1.5em;
+}

@@ -2,20 +2,40 @@ import { deleteUserById, findUserById, getUsers, saveNewUser, updateUserInDb } f
 import { DeleteResult } from "../types/DeleteResult.js";
 import { User } from "../types/User.js";
 
+interface UserResponse {
+    success: boolean;
+    message?: string;
+    user?: User;
+}
 
-export async function newUser(user: User):Promise<string>{
+export async function newUser(user: User): Promise<UserResponse> {
     try {
         const result = await saveNewUser(user);
-        return result;
-    } catch (error:any){//TODO: quitar el any
+        if ('success' in result && !result.success) {
+            return {
+                success: false,
+                message: result.message
+            };
+        }
+        return {
+            success: true,
+            message: "Usuario creado correctamente",
+            user: result
+        };
+    } catch (error: any) {
         if (error.code === "23505") {
             const columnMatch = error.detail.match(/Key \((.*?)\)=/);
             const columnName = columnMatch ? columnMatch[1] : 'campo';
-            return `El ${columnName} ya existe en la base de datos`;
+            return {
+                success: false,
+                message: `El ${columnName} ya existe en la base de datos`
+            };
         }
-        return error;
+        return {
+            success: false,
+            message: error.message || "Error al crear el usuario"
+        };
     }
-      
 }
 
 export async function getAllUsers():Promise<string>{
@@ -45,7 +65,7 @@ export async function updateUser(id: string, user: User): Promise<any> {
         } else {
             return {
                 success: false,
-                message: result.message
+                message: result.message || 'Error al actualizar el usuario'
             };
         }
     } catch (error: any) {

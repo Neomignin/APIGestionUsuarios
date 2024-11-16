@@ -106,20 +106,46 @@ class FormValidator {
         this.errorMessages.delete(fieldName);
     }
 
-    private handleSubmit(e: Event): void {
+    private async handleSubmit(e: Event): Promise<void> {
         e.preventDefault();
         
         const inputs = this.form.querySelectorAll('input');
         let isValid = true;
-
 
         inputs.forEach(input => {
             if (!this.validateField(input as HTMLInputElement)) {
                 isValid = false;
             }
         });
+
         if (isValid) {
-            this.form.submit();
+            try {
+                const formData = new FormData(this.form);
+                const response = await fetch(this.form.action, {
+                    method: this.form.method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: formData.get('username'),
+                        name: formData.get('name'),
+                        surname: formData.get('surname'),
+                        email: formData.get('email'),
+                        password: formData.get('password')
+                    }),
+                });
+
+                if (response.ok) {
+                    window.location.href = 'index.html';
+                } else {
+                    const errorData = await response.json();
+                    console.error("Error al registrar el usuario:", errorData.message);
+                    this.showError('form', errorData.message || "Error al registrar el usuario");
+                }
+            } catch (error) {
+                console.error("Error al enviar el formulario:", error);
+                this.showError('form', "Error al enviar el formulario");
+            }
         }
     }
 } 

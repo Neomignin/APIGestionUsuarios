@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 class FormValidator {
     constructor(formId) {
         this.form = document.querySelector(`#${formId}`);
@@ -15,6 +24,7 @@ class FormValidator {
             case 'username':
                 return this.validateUsername(value);
             case 'name':
+                return this.validateName(value, fieldName);
             case 'surname':
                 return this.validateName(value, fieldName);
             case 'email':
@@ -83,17 +93,46 @@ class FormValidator {
         this.errorMessages.delete(fieldName);
     }
     handleSubmit(e) {
-        e.preventDefault();
-        const inputs = this.form.querySelectorAll('input');
-        let isValid = true;
-        inputs.forEach(input => {
-            if (!this.validateField(input)) {
-                isValid = false;
+        return __awaiter(this, void 0, void 0, function* () {
+            e.preventDefault();
+            const inputs = this.form.querySelectorAll('input');
+            let isValid = true;
+            inputs.forEach(input => {
+                if (!this.validateField(input)) {
+                    isValid = false;
+                }
+            });
+            if (isValid) {
+                try {
+                    const formData = new FormData(this.form);
+                    const response = yield fetch(this.form.action, {
+                        method: this.form.method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            username: formData.get('username'),
+                            name: formData.get('name'),
+                            surname: formData.get('surname'),
+                            email: formData.get('email'),
+                            password: formData.get('password')
+                        }),
+                    });
+                    if (response.ok) {
+                        window.location.href = 'index.html';
+                    }
+                    else {
+                        const errorData = yield response.json();
+                        console.error("Error al registrar el usuario:", errorData.message);
+                        this.showError('form', errorData.message || "Error al registrar el usuario");
+                    }
+                }
+                catch (error) {
+                    console.error("Error al enviar el formulario:", error);
+                    this.showError('form', "Error al enviar el formulario");
+                }
             }
         });
-        if (isValid) {
-            this.form.submit();
-        }
     }
 }
 export default FormValidator;

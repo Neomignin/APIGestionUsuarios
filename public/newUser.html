@@ -12,23 +12,23 @@
     <form action="/api/v1/users" method="POST" id="userForm">
         <p>
             <label for="name-field">Nombre: </label>
-            <input type="text" name="name" id="name-field">
+            <input type="text" name="name" id="name-field" required>
         </p>
         <p>
             <label for="surname-field">Primer apellido: </label>
-            <input type="text" name="surname" id="surname-field">
+            <input type="text" name="surname" id="surname-field" required>
         </p>
         <p>
             <label for="username-field">Nombre de usuario:</label>
-            <input type="text" name="username" id="username-field">
+            <input type="text" name="username" id="username-field" required>
         </p>
         <p>
             <label for="password-field">Password</label>
-            <input type="password" name="password" id="password-field">
+            <input type="password" name="password" id="password-field" required>
         </p>
         <p>
             <label for="email-field">Email</label>
-            <input type="email" name="email" id="email-field">
+            <input type="email" name="email" id="email-field" required>
         </p>
         <p>
             <input type="submit" value="Registrar">

@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (response.data.success) {
                 successMessage.textContent = 'Usuario actualizado correctamente';
                 setTimeout(() => {
-                    window.location.href = 'showUsers.html';
+                    window.location.href = 'usersManagement.html';
                 }, 2000);
             } else {
                 errorMessage.textContent = response.data.message || 'Error al actualizar el usuario';

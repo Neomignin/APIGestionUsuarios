@@ -16,10 +16,45 @@ userRouter.get("/:id", validateNumericParams, async (req: Express.Request, res: 
     res.send(user);
   });
  
-userRouter.post("/", async (req: Express.Request, res: Express.Response) => {
-    const user: User = {userName: req.body.username, name: req.body.name, first_surname: req.body.surname, email: req.body.email, password: req.body.password};
-    const result = await newUser(user);
-    res.send(result);
+userRouter.post("/", async (req: Express.Request, res: Express.Response): Promise<void> => {
+    try {
+        const user: User = {
+            userName: req.body.username,
+            name: req.body.name,
+            first_surname: req.body.surname,
+            email: req.body.email,
+            password: req.body.password
+        };
+
+        if (!user.userName || !user.name || !user.first_surname || !user.email || !user.password) {
+            res.status(400).json({ 
+                success: false,
+                message: "Todos los campos son requeridos." 
+            });
+            return;
+        }
+
+        const result = await newUser(user);
+        
+        if (!result.success) {
+            res.status(400).json({
+                success: false,
+                message: result.message || "Error al crear el usuario"
+            });
+            return;
+        }
+
+        res.status(201).json({
+            success: true,
+            message: "Usuario creado correctamente",
+            user: result.user
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: error.message || "Error interno del servidor"
+        });
+    }
 });
 
 userRouter.delete("/:id", validateNumericParams, async (req: Express.Request, res: Express.Response) => {  
@@ -32,7 +67,7 @@ userRouter.delete("/:id", validateNumericParams, async (req: Express.Request, re
 
 userRouter.put("/:id", validateNumericParams, async (req: Express.Request, res: Express.Response): Promise<void> => {
     try {
-        const requiredFields = ['username', 'name', 'surname', 'email'];
+        const requiredFields = ['userName', 'name', 'first_surname', 'email'];
         const missingFields = requiredFields.filter(field => !req.body[field]);
         
         if (missingFields.length > 0) {

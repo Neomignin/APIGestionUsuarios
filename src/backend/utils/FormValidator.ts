@@ -31,6 +31,7 @@ class FormValidator {
             case 'username':
                 return this.validateUsername(value);
             case 'name':
+                return this.validateName(value, fieldName);
             case 'surname':
                 return this.validateName(value, fieldName);
             case 'email':

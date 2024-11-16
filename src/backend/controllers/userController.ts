@@ -1,4 +1,4 @@
-import { deleteUserById, findUserById, getUsers, saveNewUser } from "../models/userModel.js";
+import { deleteUserById, findUserById, getUsers, saveNewUser, updateUserInDb } from "../models/userModel.js";
 import { DeleteResult } from "../types/DeleteResult.js";
 import { User } from "../types/User.js";
 
@@ -31,4 +31,27 @@ export async function getUser(id:string):Promise<string>{
 export async function deleteUser(id:string):Promise<DeleteResult>{
     const result = await deleteUserById(id);
     return result;
+}
+
+export async function updateUser(id: string, user: User): Promise<any> {
+    try {
+        const result = await updateUserInDb(id, user);
+        if (result.success) {
+            return {
+                success: true,
+                message: result.message,
+                user: result.user
+            };
+        } else {
+            return {
+                success: false,
+                message: result.message
+            };
+        }
+    } catch (error: any) {
+        return {
+            success: false,
+            message: error.message || 'Error al actualizar el usuario'
+        };
+    }
 }

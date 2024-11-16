@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module" src=".\src\frontend\updateUser.js"></script>
+    <link rel="stylesheet" href="styles/style.css">
+    <title>Actualizar Usuario</title>
+</head>
+<body>
+    <header><a href="index.html">Inicio</a></header>
+    <div class="form-container">
+        <h2>Actualizar Usuario</h2>
+        <form id="updateUserForm" method="POST" action="/api/v1/users/{{userId}}">
+            <input type="hidden" name="_method" value="PUT">
+            <div class="form-group">
+                <label for="userName">Nombre de Usuario:</label>
+                <input type="text" id="userName" name="userName" required>
+            </div>
+            <div class="form-group">
+                <label for="name">Nombre:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="first_surname">Apellido:</label>
+                <input type="text" id="first_surname" name="first_surname" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password">
+                <small>Dejar en blanco para mantener la contraseña actual</small>
+            </div>
+            <button type="submit">Actualizar Usuario</button>
+        </form>
+        <div id="errorMessage" class="error"></div>
+        <div id="successMessage" class="success"></div>
+        <div id="debugInfo" class="debug-info"></div>
+    </div>
+</body>
+</html> 

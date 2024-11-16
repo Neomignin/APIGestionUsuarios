@@ -12,4 +12,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const result = await axios.delete(`http://localhost:3000/api/v1/users/${id}`);
         location.reload();
     })})
+
+    document.querySelectorAll(".update-button").forEach((button) => {
+        button.addEventListener("click", (e) => {
+            const id = (e.target as HTMLElement).id.split("-")[1];
+            window.location.href = `updateUser.html?id=${id}`;
+        });
+    })
 });

@@ -1,6 +1,6 @@
 import Express from 'express';
 import { User } from '../types/User.js';
-import { deleteUser, getAllUsers, getUser, newUser } from '../controllers/userController.js';
+import { deleteUser, getAllUsers, getUser, newUser, updateUser } from '../controllers/userController.js';
 import { validateNumericParams } from '../middlewares/validateNumericParams.js';
 import { DeleteResult } from '../types/DeleteResult.js';
 
@@ -12,8 +12,8 @@ userRouter.get("/", async (req: Express.Request, res: Express.Response) => {
   });
   
 userRouter.get("/:id", validateNumericParams, async (req: Express.Request, res: Express.Response) => {
-    const result = await getUser(req.params.id);
-    res.send(result);
+    const user = await getUser(req.params.id);
+    res.send(user);
   });
  
 userRouter.post("/", async (req: Express.Request, res: Express.Response) => {
@@ -28,6 +28,42 @@ userRouter.delete("/:id", validateNumericParams, async (req: Express.Request, re
     if(!result.success && result.rowsAffected==0) statusCode=404;
     if(!result.success && !("rowsAffected" in result)) statusCode=500;
     res.status(statusCode).json({message: result.message});
+});
+
+userRouter.put("/:id", validateNumericParams, async (req: Express.Request, res: Express.Response): Promise<void> => {
+    try {
+        const requiredFields = ['username', 'name', 'surname', 'email'];
+        const missingFields = requiredFields.filter(field => !req.body[field]);
+        
+        if (missingFields.length > 0) {
+            res.status(400).json({
+                success: false,
+                message: `Faltan campos requeridos: ${missingFields.join(', ')}`
+            });
+            return;
+        }
+
+        const user: User = {
+            userName: req.body.userName,
+            name: req.body.name,
+            first_surname: req.body.first_surname,
+            email: req.body.email,
+            password: req.body.password 
+        };
+
+        const result = await updateUser(req.params.id, user);
+        
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(400).json(result);
+        }
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error al actualizar el usuario'
+        });
+    }
 });
 
 export default userRouter;
